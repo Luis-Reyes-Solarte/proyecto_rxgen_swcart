@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+
 import 'screens/home_screen.dart';
+import 'screens/incomes_screen.dart';
+import 'screens/expenses_screen.dart';
 import 'screens/shopping_cart_screen.dart';
 import 'screens/reports_screen.dart';
 
@@ -39,7 +42,8 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
 
   final List<Widget> _screens = const [
     HomeScreen(),
-    Placeholder(), // Gastos
+    IncomesScreen(), // Nueva pantalla: Ingresos
+    ExpensesScreen(), // Nueva pantalla: Gastos
     ShoppingCartScreen(),
     ReportsScreen(),
   ];
@@ -51,9 +55,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            // ===============================================================
-            // CABECERA PERMANENTE EN TODAS LAS PANTALLAS
-            // ===============================================================
+            // Header superior permanente
             Padding(
               padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 8.0),
               child: Row(
@@ -83,20 +85,15 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
               ),
             ),
 
-            // CONTENIDO DE LA PANTALLA SELECCIONADA
+            // Cuerpo dinámico por pantalla
             Expanded(
-              child: IndexedStack(
-                index: _currentIndex,
-                children: _screens,
-              ),
+              child: IndexedStack(index: _currentIndex, children: _screens),
             ),
           ],
         ),
       ),
 
-      // ===============================================================
-      // BARRA DE NAVEGACIÓN INFERIOR PERMANENTE
-      // ===============================================================
+      // Barra de navegación de 5 destinos
       bottomNavigationBar: NavigationBar(
         selectedIndex: _currentIndex,
         onDestinationSelected: (int index) {
@@ -111,8 +108,13 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
             label: 'Inicio',
           ),
           NavigationDestination(
-            icon: Icon(Icons.account_balance_wallet_outlined),
-            selectedIcon: Icon(Icons.account_balance_wallet),
+            icon: Icon(Icons.south_west_outlined),
+            selectedIcon: Icon(Icons.south_west),
+            label: 'Ingresos',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.north_east_outlined),
+            selectedIcon: Icon(Icons.north_east),
             label: 'Gastos',
           ),
           NavigationDestination(
