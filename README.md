@@ -29,3 +29,32 @@ lib/
     └── reports_screen.dart        # Pantalla de Análisis Financiero y Coach IA
 
 ```
+
+## 🛠️ Tecnologías Utilizadas
+
+-   Framework: Flutter (Dart)
+
+-   Diseño UI: Material Design 3
+
+-   Estándar de Commits: Conventional Commits
+
+## 💻 Instalación y Ejecución
+
+### Clonar el repositorio
+
+```Bash
+git clone [https://github.com/tu-usuario/rxgen-swcart.git](https://github.com/tu-usuario/rxgen-swcart.git)
+cd rxgen-swcart
+```
+
+### Instalar dependencias
+
+```Bash
+flutter pub get
+```
+
+### Ejecutar en un dispositivo o emulador
+
+```Bash
+flutter run
+```
