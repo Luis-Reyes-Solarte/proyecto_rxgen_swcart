@@ -1,3 +1,10 @@
 {
-    "conventionalCommits.scopes": ["home", "cart", "reports", "ui"]
+    "conventionalCommits.scopes": [
+        "home",
+        "cart",
+        "reports",
+        "ui",
+        "transactions",
+        "navigation"
+    ]
 }
