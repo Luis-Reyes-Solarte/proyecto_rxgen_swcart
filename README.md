@@ -1,3 +1,5 @@
 # proyecto_rxgen_swcart
 
-A new Flutter project.
+## De qué trata
+
+Es un gestor de finanzas personales
