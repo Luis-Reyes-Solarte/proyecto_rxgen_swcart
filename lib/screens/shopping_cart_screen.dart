@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
-import 'cart_widgets/shopping_item_model.dart';
-import 'cart_widgets/add_item_modal.dart';
-import 'cart_widgets/ai_suggestions_widget.dart';
+// Reemplaza los imports relativos por la ruta package del proyecto:
+import 'package:proyecto_rxgen_swcart/screens/cart_widgets/shopping_item_model.dart';
+import 'package:proyecto_rxgen_swcart/screens/cart_widgets/add_item_modal.dart';
+import 'package:proyecto_rxgen_swcart/screens/cart_widgets/ai_suggestions_widget.dart';
 
 class ShoppingCartScreen extends StatefulWidget {
   const ShoppingCartScreen({super.key});
