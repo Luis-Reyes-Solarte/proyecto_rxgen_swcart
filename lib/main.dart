@@ -63,7 +63,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Buenos días, Ana',
+                        'RxGen SWCart',
                         style: TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.bold,
