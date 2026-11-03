@@ -39,7 +39,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
 
   final List<Widget> _screens = const [
     HomeScreen(),
-    Placeholder(), // Segunda pantalla (Gastos)
+    Placeholder(), // Gastos
     ShoppingCartScreen(),
     ReportsScreen(),
   ];
@@ -47,10 +47,56 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: IndexedStack(
-        index: _currentIndex,
-        children: _screens,
+      backgroundColor: Colors.grey[50],
+      body: SafeArea(
+        child: Column(
+          children: [
+            // ===============================================================
+            // CABECERA PERMANENTE EN TODAS LAS PANTALLAS
+            // ===============================================================
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Buenos días, Ana',
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        'Tu dinero, en orden',
+                        style: TextStyle(color: Colors.grey),
+                      ),
+                    ],
+                  ),
+                  CircleAvatar(
+                    backgroundColor: Colors.blue.shade100,
+                    child: const Icon(Icons.person, color: Colors.blue),
+                  ),
+                ],
+              ),
+            ),
+
+            // CONTENIDO DE LA PANTALLA SELECCIONADA
+            Expanded(
+              child: IndexedStack(
+                index: _currentIndex,
+                children: _screens,
+              ),
+            ),
+          ],
+        ),
       ),
+
+      // ===============================================================
+      // BARRA DE NAVEGACIÓN INFERIOR PERMANENTE
+      // ===============================================================
       bottomNavigationBar: NavigationBar(
         selectedIndex: _currentIndex,
         onDestinationSelected: (int index) {
