@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-
-// Reemplaza los imports relativos por la ruta package del proyecto:
 import 'package:proyecto_rxgen_swcart/screens/cart_widgets/shopping_item_model.dart';
 import 'package:proyecto_rxgen_swcart/screens/cart_widgets/add_item_modal.dart';
 import 'package:proyecto_rxgen_swcart/screens/cart_widgets/ai_suggestions_widget.dart';
+import 'package:proyecto_rxgen_swcart/services/finance_state.dart';
 
 class ShoppingCartScreen extends StatefulWidget {
   const ShoppingCartScreen({super.key});
@@ -13,7 +12,7 @@ class ShoppingCartScreen extends StatefulWidget {
 }
 
 class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
-  final List<ShoppingItem> _items = [];
+  final FinanceState _financeState = FinanceState.instance;
 
   void _openAddItemModal() {
     showModalBottomSheet(
@@ -24,16 +23,14 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
       ),
       builder: (ctx) => AddItemModal(
         onAddItem: (name, quantity, unit) {
-          setState(() {
-            _items.add(
-              ShoppingItem(
-                id: DateTime.now().millisecondsSinceEpoch.toString(),
-                name: name,
-                quantity: quantity,
-                unit: unit,
-              ),
-            );
-          });
+          _financeState.addShoppingItem(
+            ShoppingItem(
+              id: DateTime.now().millisecondsSinceEpoch.toString(),
+              name: name,
+              quantity: quantity,
+              unit: unit,
+            ),
+          );
         },
       ),
     );
@@ -53,9 +50,7 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
           TextButton(
             onPressed: () {
               Navigator.pop(ctx);
-              setState(() {
-                _items.removeWhere((e) => e.id == item.id);
-              });
+              _financeState.removeShoppingItem(item.id);
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text('${item.name} eliminado correctamente.'),
@@ -73,17 +68,17 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final int completedCount = _items.where((item) => item.isDone).length;
-    final int pendingCount = _items.length - completedCount;
-    // Cálculo dinámico del porcentaje de la barra de progreso
-    final double progressRatio = _items.isEmpty
-        ? 0.0
-        : completedCount / _items.length;
+    return ListenableBuilder(
+      listenable: _financeState,
+      builder: (context, _) {
+        final items = _financeState.shoppingItems;
+        final int completedCount = items.where((item) => item.isDone).length;
+        final int pendingCount = items.length - completedCount;
+        final double progressRatio = items.isEmpty
+            ? 0.0
+            : completedCount / items.length;
 
-    return Scaffold(
-      backgroundColor: Colors.grey[50],
-      body: SafeArea(
-        child: Padding(
+        return Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -113,14 +108,14 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                   Text(
-                    '$completedCount de ${_items.length} completado',
+                    '$completedCount de ${items.length} completado',
                     style: const TextStyle(color: Colors.grey),
                   ),
                 ],
               ),
               const SizedBox(height: 8),
 
-              // BARRA DE PROGRESO REACTIVA[cite: 3]
+              // Barra de progreso reactiva
               ClipRRect(
                 borderRadius: BorderRadius.circular(8),
                 child: LinearProgressIndicator(
@@ -128,7 +123,7 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
                   minHeight: 8,
                   backgroundColor: Colors.grey.shade200,
                   valueColor: AlwaysStoppedAnimation<Color>(
-                    progressRatio == 1.0 && _items.isNotEmpty
+                    progressRatio == 1.0 && items.isNotEmpty
                         ? Colors.green
                         : Colors.blue.shade700,
                   ),
@@ -138,7 +133,7 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
 
               // Lista o Mensaje de Estado Vacío
               Expanded(
-                child: _items.isEmpty
+                child: items.isEmpty
                     ? Center(
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -161,9 +156,9 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
                         ),
                       )
                     : ListView.builder(
-                        itemCount: _items.length,
+                        itemCount: items.length,
                         itemBuilder: (context, index) {
-                          final item = _items[index];
+                          final item = items[index];
                           return Card(
                             elevation: 0,
                             color: Colors.white,
@@ -177,7 +172,10 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
                                 value: item.isDone,
                                 onChanged: (val) {
                                   if (val != null) {
-                                    setState(() => item.isDone = val);
+                                    _financeState.toggleShoppingItem(
+                                      item.id,
+                                      val,
+                                    );
                                   }
                                 },
                               ),
@@ -215,12 +213,11 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
                       ),
               ),
 
-              // Módulo reservado para IA importado externamente[cite: 3]
               const AiSuggestionsWidget(),
             ],
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }
