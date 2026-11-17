@@ -6,6 +6,7 @@
         "ui",
         "transactions",
         "navigation",
-        "storage"
+        "storage",
+        "ai"
     ]
 }
