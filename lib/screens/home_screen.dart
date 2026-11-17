@@ -10,48 +10,85 @@ class HomeScreen extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Tarjeta de Balance General
+          // Tarjeta de Balance General (Estilo Figma #111820 en $0.00)
           Container(
             width: double.infinity,
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              color: Colors.blue.shade700,
-              borderRadius: BorderRadius.circular(20),
+              color: const Color(0xFF111820),
+              borderRadius: BorderRadius.circular(18),
+              boxShadow: const [
+                BoxShadow(
+                  color: Color(0x1217212B),
+                  blurRadius: 18,
+                  offset: Offset(0, 6),
+                ),
+              ],
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text(
                   'Balance General',
-                  style: TextStyle(color: Colors.white70, fontSize: 14),
+                  style: TextStyle(color: Color(0xFFAEB7C0), fontSize: 12),
                 ),
                 const SizedBox(height: 8),
                 const Text(
-                  '\$24,580.00',
+                  '\$0.00',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 32,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 18),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Row(
-                      children: const [
-                        Icon(Icons.arrow_upward, color: Colors.greenAccent, size: 18),
-                        SizedBox(width: 4),
-                        Text('Ingresos \$18,420', style: TextStyle(color: Colors.white)),
-                      ],
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: const [
+                          Text(
+                            '↑ Ingresos',
+                            style: TextStyle(
+                              color: Color(0xFFAEB7C0),
+                              fontSize: 11,
+                            ),
+                          ),
+                          SizedBox(height: 3),
+                          Text(
+                            '\$0.00',
+                            style: TextStyle(
+                              color: Color(0xFF2ECC71),
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                    Container(height: 15, width: 1, color: Colors.white30),
-                    Row(
-                      children: const [
-                        Icon(Icons.arrow_downward, color: Colors.orangeAccent, size: 18),
-                        SizedBox(width: 4),
-                        Text('Gastos \$9,840', style: TextStyle(color: Colors.white)),
-                      ],
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: const [
+                          Text(
+                            '↓ Gastos',
+                            style: TextStyle(
+                              color: Color(0xFFAEB7C0),
+                              fontSize: 11,
+                            ),
+                          ),
+                          SizedBox(height: 3),
+                          Text(
+                            '\$0.00',
+                            style: TextStyle(
+                              color: Color(0xFFE74C3C),
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
@@ -66,20 +103,33 @@ class HomeScreen extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: Colors.purple.shade50,
+              color: const Color(0xFFF5F0FA),
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: Colors.purple.shade100),
+              border: Border.all(color: const Color(0xFFE7D7EE)),
             ),
             child: Row(
               children: [
-                Icon(Icons.auto_awesome, color: Colors.purple.shade600),
+                Container(
+                  width: 32,
+                  height: 32,
+                  decoration: const BoxDecoration(
+                    color: Color(0xFF9B59B6),
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    Icons.auto_awesome,
+                    color: Colors.white,
+                    size: 16,
+                  ),
+                ),
                 const SizedBox(width: 12),
-                Expanded(
+                const Expanded(
                   child: Text(
-                    'VIA: Detectamos un aumento del 12% en Suscripciones respecto al mes pasado. ¿Quieres revisarlo?',
+                    'VIA: Registra tus primeros ingresos o gastos para comenzar a analizar tus hábitos financieros.',
                     style: TextStyle(
-                      color: Colors.purple.shade900,
-                      fontSize: 13,
+                      color: Color(0xFF17212B),
+                      fontSize: 12,
+                      height: 1.35,
                     ),
                   ),
                 ),
@@ -88,83 +138,169 @@ class HomeScreen extends StatelessWidget {
           ),
           // ===============================================================
 
-          const SizedBox(height: 20),
+          const SizedBox(height: 22),
 
-          // Resumen gráfico de categorías
-          const Text(
-            'Gastos \$9.8k',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 12),
+          // Gráfico circular de categorías en estado vacío (Anillo neutro)
           Row(
             children: [
-              Expanded(child: _buildCategoryChip('Comida', '54%', Colors.blue.shade100, Colors.blue.shade900)),
-              const SizedBox(width: 8),
-              Expanded(child: _buildCategoryChip('Transporte', '24%', Colors.amber.shade100, Colors.amber.shade900)),
-              const SizedBox(width: 8),
-              Expanded(child: _buildCategoryChip('Hogar', '22%', Colors.teal.shade100, Colors.teal.shade900)),
+              SizedBox(
+                width: 132,
+                height: 132,
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    SizedBox(
+                      width: 120,
+                      height: 120,
+                      child: CircularProgressIndicator(
+                        value: 1.0,
+                        strokeWidth: 16,
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          Colors.grey.shade200,
+                        ),
+                      ),
+                    ),
+                    Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: const [
+                        Text(
+                          'Gastos',
+                          style: TextStyle(
+                            color: Color(0xFF6F7A86),
+                            fontSize: 11,
+                          ),
+                        ),
+                        Text(
+                          '\$0',
+                          style: TextStyle(
+                            color: Color(0xFF17212B),
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 24),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildCategoryLegendRow(
+                      'Comida',
+                      '0%',
+                      Colors.grey.shade300,
+                    ),
+                    const SizedBox(height: 12),
+                    _buildCategoryLegendRow(
+                      'Transporte',
+                      '0%',
+                      Colors.grey.shade300,
+                    ),
+                    const SizedBox(height: 12),
+                    _buildCategoryLegendRow(
+                      'Hogar',
+                      '0%',
+                      Colors.grey.shade300,
+                    ),
+                  ],
+                ),
+              ),
             ],
           ),
           const SizedBox(height: 24),
 
-          // Sección de Últimos Movimientos
+          // Sección de Últimos Movimientos (Estado vacío)
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text(
+            children: const [
+              Text(
                 'Últimos movimientos',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  fontSize: 17,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF17212B),
+                ),
               ),
-              TextButton(
-                onPressed: () {},
-                child: const Text('Ver todos'),
+              Text(
+                'Ver todos',
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Color(0xFF6F7A86),
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ],
           ),
-          const SizedBox(height: 8),
-          _buildTransactionTile('Walmart', 'Hoy • Comida', '-\$86.40', Colors.red),
-          _buildTransactionTile('Nómina', 'Ayer • Ingreso', '+\$2,450', Colors.green),
-          _buildTransactionTile('Uber', '18 sep • Transporte', '-\$18.90', Colors.red),
-          _buildTransactionTile('Netflix', '17 sep • Suscripciones', '-\$15.49', Colors.red),
+          const SizedBox(height: 12),
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 16),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(color: const Color(0xFFE9EDF1)),
+            ),
+            child: Column(
+              children: [
+                Icon(
+                  Icons.receipt_long_outlined,
+                  size: 42,
+                  color: Colors.grey.shade400,
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  'Aún no hay movimientos',
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.grey.shade700,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'Tus ingresos y gastos recientes aparecerán aquí.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 12, color: Colors.grey.shade500),
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildCategoryChip(String label, String percentage, Color bgColor, Color textColor) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
-      decoration: BoxDecoration(
-        color: bgColor,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Column(
-        children: [
-          Text(label, style: TextStyle(color: textColor, fontSize: 12, fontWeight: FontWeight.w500)),
-          const SizedBox(height: 4),
-          Text(percentage, style: TextStyle(color: textColor, fontWeight: FontWeight.bold, fontSize: 16)),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildTransactionTile(String title, String subtitle, String amount, Color amountColor) {
-    return Card(
-      elevation: 0,
-      color: Colors.white,
-      margin: const EdgeInsets.only(bottom: 8),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-        side: BorderSide(color: Colors.grey.shade200),
-      ),
-      child: ListTile(
-        title: Text(title, style: const TextStyle(fontWeight: FontWeight.w600)),
-        subtitle: Text(subtitle, style: const TextStyle(color: Colors.grey, fontSize: 12)),
-        trailing: Text(
-          amount,
-          style: TextStyle(fontWeight: FontWeight.bold, color: amountColor, fontSize: 15),
+  Widget _buildCategoryLegendRow(
+    String label,
+    String percentage,
+    Color dotColor,
+  ) {
+    return Row(
+      children: [
+        Container(
+          width: 8,
+          height: 8,
+          decoration: BoxDecoration(color: dotColor, shape: BoxShape.circle),
         ),
-      ),
+        const SizedBox(width: 8),
+        Expanded(
+          child: Text(
+            label,
+            style: const TextStyle(color: Color(0xFF6F7A86), fontSize: 12),
+          ),
+        ),
+        Text(
+          percentage,
+          style: const TextStyle(
+            color: Color(0xFF17212B),
+            fontSize: 12,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ],
     );
   }
 }
