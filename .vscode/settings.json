@@ -5,6 +5,7 @@
         "reports",
         "ui",
         "transactions",
-        "navigation"
+        "navigation",
+        "storage"
     ]
 }
