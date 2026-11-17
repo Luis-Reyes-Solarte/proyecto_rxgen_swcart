@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:proyecto_rxgen_swcart/services/finance_state.dart';
 
 import 'screens/home_screen.dart';
 import 'screens/incomes_screen.dart';
@@ -6,7 +7,9 @@ import 'screens/expenses_screen.dart';
 import 'screens/shopping_cart_screen.dart';
 import 'screens/reports_screen.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await FinanceState.instance.init();
   runApp(const RxGenSWCartApp());
 }
 
@@ -42,8 +45,8 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
 
   final List<Widget> _screens = const [
     HomeScreen(),
-    IncomesScreen(), // Nueva pantalla: Ingresos
-    ExpensesScreen(), // Nueva pantalla: Gastos
+    IncomesScreen(),
+    ExpensesScreen(),
     ShoppingCartScreen(),
     ReportsScreen(),
   ];
