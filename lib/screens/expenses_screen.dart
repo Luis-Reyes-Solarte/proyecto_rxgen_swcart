@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:proyecto_rxgen_swcart/models/transaction_model.dart';
+import 'package:proyecto_rxgen_swcart/services/ai_finance_service.dart';
+import 'package:proyecto_rxgen_swcart/services/finance_state.dart';
 
 class ExpensesScreen extends StatefulWidget {
   const ExpensesScreen({super.key});
@@ -8,22 +11,71 @@ class ExpensesScreen extends StatefulWidget {
 }
 
 class _ExpensesScreenState extends State<ExpensesScreen> {
-  final TextEditingController _amountController = TextEditingController(
-    text: '0.00',
-  );
-  final TextEditingController _conceptController = TextEditingController(
-    text: 'Walmart',
-  );
+  final TextEditingController _amountController = TextEditingController();
+  final TextEditingController _conceptController = TextEditingController();
 
   String _selectedCategory = 'Comida';
   String _selectedCurrency = 'MXN';
+  bool _autoClassifiedByAi = false;
 
-  final List _categories = [
+  final List> final _categories = [
     {'name': 'Supermercado', 'icon': Icons.shopping_bag_outlined},
     {'name': 'Comida', 'icon': Icons.restaurant},
     {'name': 'Transporte', 'icon': Icons.directions_bus_outlined},
     {'name': 'Hogar', 'icon': Icons.home_outlined},
   ];
+
+  void _onConceptChanged(String value) {
+    final predicted = AiFinanceService.instance.predictCategoryFromHistory(
+      state: FinanceState.instance,
+      conceptInput: value,
+      type: TransactionType.expense,
+    );
+    if (predicted != null &&
+        _categories.any((c) => c['name'] == predicted)) {
+      setState(() {
+        _selectedCategory = predicted;
+        _autoClassifiedByAi = true;
+      });
+    } else if (_autoClassifiedByAi) {
+      setState(() => _autoClassifiedByAi = false);
+    }
+  }
+
+  Future<void> _saveExpense() async {
+    final amount = double.tryParse(_amountController.text.replaceAll(',', '.')) ?? 0.0;
+    final concept = _conceptController.text.trim();
+
+    if (amount <= 0 || concept.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Ingresa un monto válido y un concepto.'),
+        ),
+      );
+      return;
+    }
+
+    final tx = TransactionModel(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      type: TransactionType.expense,
+      amount: amount,
+      currency: _selectedCurrency,
+      concept: concept,
+      category: _selectedCategory,
+      date: DateTime.now(),
+    );
+
+    await FinanceState.instance.addTransaction(tx);
+
+    if (!mounted) return;
+    _amountController.clear();
+    _conceptController.clear();
+    setState(() => _autoClassifiedByAi = false);
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Gasto registrado y guardado en historial.')),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,6 +105,7 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
             style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
             decoration: InputDecoration(
+              hintText: '0.00',
               prefixText: '\$ ',
               suffixIcon: Padding(
                 padding: const EdgeInsets.all(12.0),
@@ -94,7 +147,9 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
           const SizedBox(height: 6),
           TextField(
             controller: _conceptController,
+            onChanged: _onConceptChanged,
             decoration: InputDecoration(
+              hintText: 'Ej. Walmart, Uber, Almuerzo...',
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
@@ -106,14 +161,34 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
           ),
           const SizedBox(height: 16),
 
-          // Selección de Categoría
-          const Text(
-            'Categoría',
-            style: TextStyle(
-              fontSize: 12,
-              color: Colors.grey,
-              fontWeight: FontWeight.bold,
-            ),
+          // Selección de Categoría + Indicador de Autoclasificación IA
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                'Categoría',
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Colors.grey,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              if (_autoClassifiedByAi)
+                Row(
+                  children: const [
+                    Icon(Icons.auto_awesome, size: 14, color: Colors.purple),
+                    SizedBox(width: 4),
+                    Text(
+                      'Autoclasificado por historial',
+                      style: TextStyle(
+                        fontSize: 11,
+                        color: Colors.purple,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+            ],
           ),
           const SizedBox(height: 8),
           Wrap(
@@ -123,87 +198,35 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
               final isSelected = _selectedCategory == cat['name'];
               return ChoiceChip(
                 avatar: Icon(
-                  cat['icon'],
+                  cat['icon'] as IconData,
                   size: 18,
                   color: isSelected ? Colors.white : Colors.black87,
                 ),
-                label: Text(cat['name']),
+                label: Text(cat['name'] as String),
                 selected: isSelected,
                 selectedColor: Colors.blue.shade700,
                 labelStyle: TextStyle(
                   color: isSelected ? Colors.white : Colors.black87,
                 ),
                 onSelected: (selected) {
-                  if (selected) setState(() => _selectedCategory = cat['name']);
+                  if (selected) {
+                    setState(() {
+                      _selectedCategory = cat['name'] as String;
+                      _autoClassifiedByAi = false;
+                    });
+                  }
                 },
               );
             }).toList(),
           ),
-          const SizedBox(height: 16),
-
-          // Fecha por defecto
-          Row(
-            children: const [
-              Icon(Icons.calendar_today_outlined, size: 18, color: Colors.grey),
-              SizedBox(width: 8),
-              Text(
-                'Hoy, 22 de septiembre',
-                style: TextStyle(
-                  color: Colors.grey,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 20),
-
-          // ===============================================================
-          // TODO: [ESPACIO RESERVADO PARA IA]
-          // Predicciones de Contexto dinámicas basadas en hábitos de consumo
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: const [
-                  Icon(Icons.auto_awesome, size: 16, color: Colors.purple),
-                  SizedBox(width: 6),
-                  Text(
-                    'Predicciones de Contexto',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.purple,
-                      fontSize: 13,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 8),
-              Wrap(
-                spacing: 8,
-                children: [
-                  _buildAiPredictionChip('Supermercado'),
-                  _buildAiPredictionChip('Almuerzo'),
-                  _buildAiPredictionChip('Despensa'),
-                ],
-              ),
-            ],
-          ),
-          // ===============================================================
-
           const SizedBox(height: 28),
 
-          // Botón de Guardar Gasto (Rojo / Tonalidad de Gasto)
+          // Botón de Guardar Gasto
           SizedBox(
             width: double.infinity,
             height: 50,
             child: ElevatedButton.icon(
-              onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Gasto registrado correctamente.'),
-                  ),
-                );
-              },
+              onPressed: _saveExpense,
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.redAccent.shade400,
                 foregroundColor: Colors.white,
@@ -220,22 +243,6 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildAiPredictionChip(String label) {
-    return ActionChip(
-      label: Text(
-        label,
-        style: const TextStyle(fontSize: 12, color: Colors.purple),
-      ),
-      backgroundColor: Colors.purple.shade50,
-      side: BorderSide(color: Colors.purple.shade100),
-      onPressed: () {
-        setState(() {
-          _conceptController.text = label;
-        });
-      },
     );
   }
 
