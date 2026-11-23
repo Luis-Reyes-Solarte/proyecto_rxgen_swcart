@@ -17,7 +17,6 @@ class _ReportsScreenState extends State<ReportsScreen> {
   final FinanceState _financeState = FinanceState.instance;
   final TextEditingController _coachController = TextEditingController();
 
-  int _selectedPeriod = 1;
   String? _coachResponse;
   bool _isLoadingCoach = false;
 
@@ -81,20 +80,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                 ),
               ),
               const SizedBox(height: 14),
-              SizedBox(
-                width: double.infinity,
-                child: SegmentedButton<int>(
-                  segments: const [
-                    ButtonSegment(value: 0, label: Text('Semana')),
-                    ButtonSegment(value: 1, label: Text('Mes')),
-                    ButtonSegment(value: 2, label: Text('Año')),
-                  ],
-                  selected: {_selectedPeriod},
-                  onSelectionChanged: (set) {
-                    setState(() => _selectedPeriod = set.first);
-                  },
-                ),
-              ),
+
               const SizedBox(height: 18),
               ReportsSavingsCard(
                 hasHistory: hasHistory,
