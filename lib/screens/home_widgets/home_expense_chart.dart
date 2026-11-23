@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:proyecto_rxgen_swcart/utils/currency_formatter.dart';
 
 class HomeExpenseChart extends StatelessWidget {
   final double totalExpense;
@@ -46,7 +47,7 @@ class HomeExpenseChart extends StatelessWidget {
                     style: TextStyle(color: Color(0xFF6F7A86), fontSize: 11),
                   ),
                   Text(
-                    '\$${totalExpense.toStringAsFixed(0)}',
+                    totalExpense.toColombianCurrency(),
                     style: const TextStyle(
                       color: Color(0xFF17212B),
                       fontSize: 18,

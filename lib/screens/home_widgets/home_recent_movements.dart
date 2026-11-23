@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:proyecto_rxgen_swcart/models/transaction_model.dart';
+import 'package:proyecto_rxgen_swcart/utils/currency_formatter.dart';
 
 class HomeRecentMovements extends StatelessWidget {
   final bool hasHistory;
@@ -80,7 +81,7 @@ class HomeRecentMovements extends StatelessWidget {
                   style: const TextStyle(color: Colors.grey, fontSize: 12),
                 ),
                 trailing: Text(
-                  '${isIncome ? '+' : '-'}\$${tx.amount.toStringAsFixed(2)}',
+                  '${isIncome ? '+' : '-'}${tx.amount.toColombianCurrency()}',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     color: isIncome ? Colors.green : Colors.red,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:proyecto_rxgen_swcart/utils/currency_formatter.dart';
 
 class HomeBalanceCard extends StatelessWidget {
   final double balance;
@@ -37,7 +38,7 @@ class HomeBalanceCard extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            '\$${balance.toStringAsFixed(2)}',
+            balance.toColombianCurrency(),
             style: const TextStyle(
               color: Colors.white,
               fontSize: 32,
@@ -50,14 +51,14 @@ class HomeBalanceCard extends StatelessWidget {
               Expanded(
                 child: _BalanceMetric(
                   label: '↑ Ingresos',
-                  value: '\$${totalIncome.toStringAsFixed(2)}',
+                  value: totalIncome.toColombianCurrency(),
                   color: const Color(0xFF2ECC71),
                 ),
               ),
               Expanded(
                 child: _BalanceMetric(
                   label: '↓ Gastos',
-                  value: '\$${totalExpense.toStringAsFixed(2)}',
+                  value: totalExpense.toColombianCurrency(),
                   color: const Color(0xFFE74C3C),
                 ),
               ),
