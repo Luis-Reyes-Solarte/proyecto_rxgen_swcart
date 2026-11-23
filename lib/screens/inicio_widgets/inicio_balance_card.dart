@@ -1,81 +1,90 @@
 import 'package:flutter/material.dart';
+import 'package:proyecto_rxgen_swcart/services/finance_state.dart';
+import 'package:proyecto_rxgen_swcart/utils/currency_formatter.dart';
 
 class InicioBalanceCard extends StatelessWidget {
   const InicioBalanceCard({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(18),
-      clipBehavior: Clip.antiAlias,
-      decoration: ShapeDecoration(
-        color: const Color(0xFF111820),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(18),
-        ),
-        shadows: [
-          BoxShadow(
-            color: Color(0x1217212B),
-            blurRadius: 18,
-            offset: Offset(0, 6),
-            spreadRadius: 0,
-          ),
-        ],
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        spacing: 12,
-        children: [
-          Text(
-            'Balance General',
-            style: TextStyle(
-              color: const Color(0xFFAEB7C0),
-              fontSize: 12,
-              fontFamily: 'Inter',
-              fontWeight: FontWeight.w400,
+    final financeState = FinanceState.instance;
+
+    return ListenableBuilder(
+      listenable: financeState,
+      builder: (context, _) {
+        return Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(18),
+          clipBehavior: Clip.antiAlias,
+          decoration: ShapeDecoration(
+            color: const Color(0xFF111820),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(18),
             ),
+            shadows: const [
+              BoxShadow(
+                color: Color(0x1217212B),
+                blurRadius: 18,
+                offset: Offset(0, 6),
+                spreadRadius: 0,
+              ),
+            ],
           ),
-          Text(
-            '\$24,580.00',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 30,
-              fontFamily: 'Inter',
-              fontWeight: FontWeight.w400,
-            ),
-          ),
-          Container(
-            width: double.infinity,
-            clipBehavior: Clip.antiAlias,
-            decoration: BoxDecoration(),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              spacing: 10,
-              children: [
-                Expanded(
-                  child: _BalanceMetric(
-                    label: '↑ Ingresos',
-                    value: '\$18,420',
-                    valueColor: const Color(0xFF2ECC71),
-                  ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            spacing: 12,
+            children: [
+              const Text(
+                'Balance General',
+                style: TextStyle(
+                  color: Color(0xFFAEB7C0),
+                  fontSize: 12,
+                  fontFamily: 'Inter',
+                  fontWeight: FontWeight.w400,
                 ),
-                Expanded(
-                  child: _BalanceMetric(
-                    label: '↓ Gastos',
-                    value: '\$9,840',
-                    valueColor: const Color(0xFFE74C3C),
-                  ),
+              ),
+              Text(
+                financeState.balance.toColombianCurrency(),
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 30,
+                  fontFamily: 'Inter',
+                  fontWeight: FontWeight.w400,
                 ),
-              ],
-            ),
+              ),
+              Container(
+                width: double.infinity,
+                clipBehavior: Clip.antiAlias,
+                decoration: const BoxDecoration(),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  spacing: 10,
+                  children: [
+                    Expanded(
+                      child: _BalanceMetric(
+                        label: '↑ Ingresos',
+                        value: financeState.totalIncome.toColombianCurrency(),
+                        valueColor: const Color(0xFF2ECC71),
+                      ),
+                    ),
+                    Expanded(
+                      child: _BalanceMetric(
+                        label: '↓ Gastos',
+                        value: financeState.totalExpense.toColombianCurrency(),
+                        valueColor: const Color(0xFFE74C3C),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 }
@@ -95,7 +104,7 @@ class _BalanceMetric extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       clipBehavior: Clip.antiAlias,
-      decoration: BoxDecoration(),
+      decoration: const BoxDecoration(),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.start,
@@ -104,8 +113,8 @@ class _BalanceMetric extends StatelessWidget {
         children: [
           Text(
             label,
-            style: TextStyle(
-              color: const Color(0xFFAEB7C0),
+            style: const TextStyle(
+              color: Color(0xFFAEB7C0),
               fontSize: 11,
               fontFamily: 'Inter',
               fontWeight: FontWeight.w400,
