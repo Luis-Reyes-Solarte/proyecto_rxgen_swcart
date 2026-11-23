@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:proyecto_rxgen_swcart/models/transaction_model.dart';
+import 'package:proyecto_rxgen_swcart/screens/incomes_widgets/income_amount_field.dart';
+import 'package:proyecto_rxgen_swcart/screens/incomes_widgets/income_category_selector.dart';
 import 'package:proyecto_rxgen_swcart/services/ai_finance_service.dart';
 import 'package:proyecto_rxgen_swcart/services/finance_state.dart';
 
@@ -43,7 +45,8 @@ class _IncomesScreenState extends State<IncomesScreen> {
   }
 
   Future<void> _saveIncome() async {
-    final amount = double.tryParse(_amountController.text.replaceAll(',', '.')) ?? 0.0;
+    final amount =
+        double.tryParse(_amountController.text.replaceAll(',', '.')) ?? 0.0;
     final concept = _conceptController.text.trim();
 
     if (amount <= 0 || concept.isEmpty) {
@@ -89,53 +92,12 @@ class _IncomesScreenState extends State<IncomesScreen> {
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 16),
-
-          // Campo de Monto
-          const Text(
-            'MONTO',
-            style: TextStyle(
-              fontSize: 12,
-              color: Colors.grey,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 6),
-          TextField(
+          IncomeAmountField(
             controller: _amountController,
-            keyboardType: const TextInputType.numberWithOptions(decimal: true),
-            style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
-            decoration: InputDecoration(
-              hintText: '0.00',
-              prefixText: '\$ ',
-              suffixIcon: Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: DropdownButtonHideUnderline(
-                  child: DropdownButton<String>(
-                    value: _selectedCurrency,
-                    items: ['MXN', 'USD', 'COP'].map((curr) {
-                      return DropdownMenuItem(
-                        value: curr,
-                        child: Text(curr, style: const TextStyle(fontSize: 14)),
-                      );
-                    }).toList(),
-                    onChanged: (val) => setState(
-                      () => _selectedCurrency = val ?? _selectedCurrency,
-                    ),
-                  ),
-                ),
-              ),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              contentPadding: const EdgeInsets.symmetric(
-                horizontal: 16,
-                vertical: 12,
-              ),
-            ),
+            selectedCurrency: _selectedCurrency,
+            onCurrencyChanged: (val) => setState(() => _selectedCurrency = val),
           ),
           const SizedBox(height: 16),
-
-          // Concepto / Fuente
           const Text(
             'Concepto / Fuente',
             style: TextStyle(
@@ -160,68 +122,18 @@ class _IncomesScreenState extends State<IncomesScreen> {
             ),
           ),
           const SizedBox(height: 16),
-
-          // Selección de Categoría + Indicador de Autoclasificación IA
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text(
-                'Categoría',
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Colors.grey,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              if (_autoClassifiedByAi)
-                Row(
-                  children: const [
-                    Icon(Icons.auto_awesome, size: 14, color: Colors.purple),
-                    SizedBox(width: 4),
-                    Text(
-                      'Autoclasificado por historial',
-                      style: TextStyle(
-                        fontSize: 11,
-                        color: Colors.purple,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
-                ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: _categories.map((cat) {
-              final isSelected = _selectedCategory == cat['name'];
-              return ChoiceChip(
-                avatar: Icon(
-                  cat['icon'] as IconData,
-                  size: 18,
-                  color: isSelected ? Colors.white : Colors.black87,
-                ),
-                label: Text(cat['name'] as String),
-                selected: isSelected,
-                selectedColor: Colors.green.shade600,
-                labelStyle: TextStyle(
-                  color: isSelected ? Colors.white : Colors.black87,
-                ),
-                onSelected: (selected) {
-                  if (selected) {
-                    setState(() {
-                      _selectedCategory = cat['name'] as String;
-                      _autoClassifiedByAi = false;
-                    });
-                  }
-                },
-              );
-            }).toList(),
+          IncomeCategorySelector(
+            categories: _categories,
+            selectedCategory: _selectedCategory,
+            autoClassifiedByAi: _autoClassifiedByAi,
+            onSelected: (category) {
+              setState(() {
+                _selectedCategory = category;
+                _autoClassifiedByAi = false;
+              });
+            },
           ),
           const SizedBox(height: 28),
-
-          // Botón de Guardar Ingreso
           SizedBox(
             width: double.infinity,
             height: 50,
