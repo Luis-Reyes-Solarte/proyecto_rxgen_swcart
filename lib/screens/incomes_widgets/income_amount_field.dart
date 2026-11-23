@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:proyecto_rxgen_swcart/utils/currency_formatter.dart';
 
 class IncomeAmountField extends StatelessWidget {
   final TextEditingController controller;
@@ -27,6 +28,7 @@ class IncomeAmountField extends StatelessWidget {
         ),
         const SizedBox(height: 6),
         TextField(
+          inputFormatters: [ColombianCurrencyInputFormatter()],
           controller: controller,
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
           style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
@@ -44,13 +46,12 @@ class IncomeAmountField extends StatelessWidget {
                       child: Text(curr, style: const TextStyle(fontSize: 14)),
                     );
                   }).toList(),
-                  onChanged: (val) => onCurrencyChanged(val ?? selectedCurrency),
+                  onChanged: (val) =>
+                      onCurrencyChanged(val ?? selectedCurrency),
                 ),
               ),
             ),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
             contentPadding: const EdgeInsets.symmetric(
               horizontal: 16,
               vertical: 12,
