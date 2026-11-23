@@ -4,6 +4,7 @@ import 'package:proyecto_rxgen_swcart/screens/expenses_widgets/expense_amount_fi
 import 'package:proyecto_rxgen_swcart/screens/expenses_widgets/expense_category_selector.dart';
 import 'package:proyecto_rxgen_swcart/services/ai_finance_service.dart';
 import 'package:proyecto_rxgen_swcart/services/finance_state.dart';
+import 'package:proyecto_rxgen_swcart/utils/currency_formatter.dart';
 
 class ExpensesScreen extends StatefulWidget {
   const ExpensesScreen({super.key});
@@ -33,8 +34,7 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
       conceptInput: value,
       type: TransactionType.expense,
     );
-    if (predicted != null &&
-        _categories.any((c) => c['name'] == predicted)) {
+    if (predicted != null && _categories.any((c) => c['name'] == predicted)) {
       setState(() {
         _selectedCategory = predicted;
         _autoClassifiedByAi = true;
@@ -45,15 +45,12 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
   }
 
   Future<void> _saveExpense() async {
-    final amount =
-        double.tryParse(_amountController.text.replaceAll(',', '.')) ?? 0.0;
+    final amount = CurrencyFormatter.parse(_amountController.text);
     final concept = _conceptController.text.trim();
 
     if (amount <= 0 || concept.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Ingresa un monto válido y un concepto.'),
-        ),
+        const SnackBar(content: Text('Ingresa un monto válido y un concepto.')),
       );
       return;
     }
@@ -76,7 +73,9 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
     setState(() => _autoClassifiedByAi = false);
 
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Gasto registrado y guardado en historial.')),
+      const SnackBar(
+        content: Text('Gasto registrado y guardado en historial.'),
+      ),
     );
   }
 
