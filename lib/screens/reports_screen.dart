@@ -5,6 +5,7 @@ import 'package:proyecto_rxgen_swcart/screens/reports_widgets/reports_savings_ca
 import 'package:proyecto_rxgen_swcart/screens/reports_widgets/reports_stat_cards.dart';
 import 'package:proyecto_rxgen_swcart/services/ai_finance_service.dart';
 import 'package:proyecto_rxgen_swcart/services/finance_state.dart';
+import 'package:proyecto_rxgen_swcart/utils/currency_formatter.dart';
 
 class ReportsScreen extends StatefulWidget {
   const ReportsScreen({super.key});
@@ -101,7 +102,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                   ),
                   Text(
                     hasHistory
-                        ? 'Meta: \$${_financeState.monthlyGoal.toStringAsFixed(0)}'
+                        ? 'Meta: ${_financeState.monthlyGoal.toColombianCurrency()}'
                         : 'Sin datos registrados',
                     style: const TextStyle(
                       color: Color(0xFF6F7A86),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:proyecto_rxgen_swcart/utils/currency_formatter.dart';
 
 class ReportsSavingsCard extends StatelessWidget {
   final bool hasHistory;
@@ -30,14 +31,11 @@ class ReportsSavingsCard extends StatelessWidget {
             children: [
               const Text(
                 'Ahorro este mes',
-                style: TextStyle(
-                  color: Color(0xFF6F7A86),
-                  fontSize: 12,
-                ),
+                style: TextStyle(color: Color(0xFF6F7A86), fontSize: 12),
               ),
               const SizedBox(height: 4),
               Text(
-                '\$${savings.toStringAsFixed(2)}',
+                savings.toColombianCurrency(),
                 style: const TextStyle(
                   fontSize: 26,
                   fontWeight: FontWeight.bold,
