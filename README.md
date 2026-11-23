@@ -56,5 +56,5 @@ flutter pub get
 ### Ejecutar en un dispositivo o emulador
 
 ```Bash
-flutter run
+flutter run --dart-define=GEMINI_API_KEY=tu_clave
 ```
