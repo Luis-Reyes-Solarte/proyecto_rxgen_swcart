@@ -18,7 +18,7 @@ class _IncomesScreenState extends State<IncomesScreen> {
   String _selectedCurrency = 'MXN';
   bool _autoClassifiedByAi = false;
 
-  final List> final _categories = [
+  final List<Map<String, dynamic>> _categories = [
     {'name': 'Nómina', 'icon': Icons.work_outline},
     {'name': 'Ventas', 'icon': Icons.storefront_outlined},
     {'name': 'Inversiones', 'icon': Icons.trending_up},

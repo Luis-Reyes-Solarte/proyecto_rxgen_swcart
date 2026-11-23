@@ -18,7 +18,7 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
   String _selectedCurrency = 'MXN';
   bool _autoClassifiedByAi = false;
 
-  final List> final _categories = [
+  final List<Map<String, dynamic>> _categories = [
     {'name': 'Supermercado', 'icon': Icons.shopping_bag_outlined},
     {'name': 'Comida', 'icon': Icons.restaurant},
     {'name': 'Transporte', 'icon': Icons.directions_bus_outlined},

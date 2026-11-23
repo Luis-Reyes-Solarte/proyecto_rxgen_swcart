@@ -132,7 +132,7 @@ class FinanceState extends ChangeNotifier {
 
   /// Devuelve sugerencias basadas únicamente en productos previamente comprados
   /// que no estén actualmente en la lista activa.
-  List> List<dynamic> getConsumptionSuggestions() {
+  List<Map<String, dynamic>> getConsumptionSuggestions() {
     if (!hasPurchaseHistory) return [];
 
     final activeNames =
