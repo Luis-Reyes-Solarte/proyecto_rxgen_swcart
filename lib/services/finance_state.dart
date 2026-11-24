@@ -37,10 +37,11 @@ class FinanceState extends ChangeNotifier {
   }
 
   void _loadFromHive() {
-    _transactions = _transactionsBox.values
-        .map((e) => TransactionModel.fromMap(Map<dynamic, dynamic>.from(e)))
-        .toList()
-      ..sort((a, b) => b.date.compareTo(a.date));
+    _transactions =
+        _transactionsBox.values
+            .map((e) => TransactionModel.fromMap(Map<dynamic, dynamic>.from(e)))
+            .toList()
+          ..sort((a, b) => b.date.compareTo(a.date));
 
     _shoppingItems = _shoppingListBox.values
         .map((e) => ShoppingItem.fromMap(Map<dynamic, dynamic>.from(e)))
@@ -77,7 +78,9 @@ class FinanceState extends ChangeNotifier {
 
   Map<String, double> get expensesByCategory {
     final Map<String, double> totals = {};
-    for (final tx in _transactions.where((t) => t.type == TransactionType.expense)) {
+    for (final tx in _transactions.where(
+      (t) => t.type == TransactionType.expense,
+    )) {
       totals[tx.category] = (totals[tx.category] ?? 0.0) + tx.amount;
     }
     return totals;
@@ -91,6 +94,12 @@ class FinanceState extends ChangeNotifier {
   }
 
   // --- MÉTODOS DE LISTA DE COMPRAS E HISTORIAL DE CICLO ---
+  Future<void> clearShoppingList() async {
+    await _shoppingListBox.clear();
+    _shoppingItems.clear();
+    notifyListeners();
+  }
+
   Future<void> addShoppingItem(ShoppingItem item) async {
     await _shoppingListBox.put(item.id, item.toMap());
     _shoppingItems.add(item);
@@ -135,15 +144,18 @@ class FinanceState extends ChangeNotifier {
   List<Map<String, dynamic>> getConsumptionSuggestions() {
     if (!hasPurchaseHistory) return [];
 
-    final activeNames =
-        _shoppingItems.map((e) => e.name.trim().toLowerCase()).toSet();
+    final activeNames = _shoppingItems
+        .map((e) => e.name.trim().toLowerCase())
+        .toSet();
 
     final suggestions = _purchaseHistory.entries
         .where((entry) => !activeNames.contains(entry.key))
         .map((entry) => entry.value)
         .toList();
 
-    suggestions.sort((a, b) => (b['count'] as int).compareTo(a['count'] as int));
+    suggestions.sort(
+      (a, b) => (b['count'] as int).compareTo(a['count'] as int),
+    );
     return suggestions.take(5).toList();
   }
 }

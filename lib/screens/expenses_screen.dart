@@ -66,6 +66,10 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
     );
 
     await FinanceState.instance.addTransaction(tx);
+    // Vacía la lista de compras al guardar el gasto
+    if (FinanceState.instance.shoppingItems.isNotEmpty) {
+      await FinanceState.instance.clearShoppingList();
+    }
 
     if (!mounted) return;
     _amountController.clear();
